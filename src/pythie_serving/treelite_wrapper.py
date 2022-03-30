@@ -25,7 +25,10 @@ class TreelitePredictionServiceServicer(
         self.logger = logger
         self.model_map = {}
         for model_config in model_server_config.model_config_list.config:
-            model = Predictor(os.path.join(model_config.base_path, model_config.name) + '.so')
+            model = Predictor(
+                libpath=os.path.join(model_config.base_path, model_config.name) + '.so',
+                nthread=int(os.environ.get("TREELITE_NTHREAD", 1))
+            )
 
             with open(os.path.join(model_config.base_path, "metadata.json"), "r") as f:
                 metadata = json.load(f)
